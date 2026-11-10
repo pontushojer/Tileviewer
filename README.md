@@ -8,19 +8,29 @@ flowcell tile position and colors it by where its read pair maps in the
 genome, making it easy to see whether neighboring clusters map to nearby
 genomic positions.
 
+![Tileviewer screenshot](example/example_local_view.png)
+
 Tileviewer needs two inputs:
 
 - A sparse matrix (`.npz`) of cluster positions on one tile.
 - The FASTA index (`.fai`) of the reference used for mapping.
 
-[Section 1](#1-install-and-run-tileviewer) covers running the viewer from existing inputs. [Section 2](#2-create-the-input-files-from-fastq) at the end,
+[Section 1](#install-and-run-tileviewer) covers running the viewer from existing 
+inputs. [Section 2](#create-the-input-files-from-trupath-fastq) at the end,
 shows how to create them from FASTQ files.
 
 For example input files, see the [example](example) directory.
 
-## 1. Install and run Tileviewer
+## Install and run Tileviewer
 
 ### Install
+
+Clone the repository and change to its directory:
+
+```bash
+git clone https://github.com/pontushojer/Tileviewer.git
+cd Tileviewer
+```
 
 Install the locked Pixi environment from the project directory (containing
 `pixi.toml` and `pixi.lock`):
@@ -35,9 +45,9 @@ pixi install
 pixi run tileviewer
 ```
 
-Open the URL printed by Streamlit, then upload the `.npz` matrix and the
-matching `.fai` in the sidebar. The `.fai` must come from the same reference
-used for mapping.
+Open the URL printed by Streamlit (if it doesn't open automatically), then 
+upload the `.npz` matrix and the matching `.fai` in the sidebar. The `.fai` 
+must come from the same reference used for mapping.
 
 ### Input format
 
@@ -66,17 +76,17 @@ used for mapping.
 - **Summary:** the panel reports grid cells, mapped and unmapped clusters,
   empty grid cells, mapped density, and a chromosome distribution for the crop.
 
-## 2. Create the input files from FASTQ
+## Create the input files from TruPath FASTQ
 
 These standalone command-line examples extract one tile's paired reads, map
 them to a reference, and convert the alignment to the `.npz` matrix using the
-included `sam_to_npz.py`. Snakemake is not required.
+included `sam_to_npz.py` script.
 
 ### Requirements
 
 - `seqkit` for FASTQ extraction, `minibwa` for indexing and mapping, and
-  `samtools` for creating the reference index. Install or load these separately
-  if they are not already on your `PATH`.
+  `samtools` for creating the reference index. Install (using for example `pixi`) 
+  or load these separately if they are not already on your `PATH`.
 - The paired FASTQ files for the run and the reference FASTA used for mapping.
 
 Create the reference index, which is also the `.fai` uploaded to the viewer:
@@ -142,15 +152,6 @@ pixi run python sam_to_npz.py \
 Defaults require MAPQ >= 40 and a maximum difference of 2,000 between the two
 reads' SAM `POS` values. Change them with `--min-mapq` and `--max-insert-size`:
 
-```bash
-pixi run python sam_to_npz.py \
-  --sam "${TILE}.sam" \
-  --fai genome.fa.fai \
-  --out "${TILE}.npz" \
-  --min-mapq 30 \
-  --max-insert-size 3000
-```
-
 Notes:
 
 - The insert-size filter uses the absolute difference between the two `POS`
@@ -163,4 +164,5 @@ Notes:
 - The helper reads SAM text and holds pair data in memory before building the
   matrix, so process one tile at a time. BAM input is not supported directly.
 
-Then follow section 1 to view `${TILE}.npz` with `genome.fa.fai`.
+Then follow [this section](#view-the-generated-npz-file) to view `${TILE}.npz` 
+with the corresponding reference index (`genome.fa.fai`).
