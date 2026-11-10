@@ -1,0 +1,17 @@
+[workspace]
+authors = ["Pontus Höjer <pontushojer@gmail.com>"]
+channels = ["conda-forge", "bioconda"]
+name = "tileviewer"
+platforms = ["osx-arm64"]
+version = "0.1.0"
+
+[tasks]
+tileviewer = { description = "Run the Tileviewer web app.", command = "streamlit run tileviewer.py" }
+
+[dependencies]
+streamlit = ">=1.67.0,<2"
+numpy = ">=2.5.4,<3"
+scipy = ">=1.18.1,<2"
+plotly = ">=7.1.0,<8"
+pillow = ">=13.0.0,<14"
+matplotlib = ">=3.11.2,<4"
