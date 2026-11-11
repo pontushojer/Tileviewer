@@ -6,7 +6,7 @@ platforms = ["osx-arm64"]
 version = "0.1.0"
 
 [tasks]
-tileviewer = { description = "Run the Tileviewer web app.", command = "streamlit run tileviewer.py" }
+tileviewer = "streamlit run tileviewer.py"
 
 [dependencies]
 streamlit = ">=1.67.0,<2"
